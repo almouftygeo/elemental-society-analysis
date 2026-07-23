@@ -1,0 +1,17 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+
+# Executables
+*.exe
+*.msi
+
+# Build directories
+dist/
+build/
+*.spec
+
+# IDE files
+.vscode/
+.idea/
