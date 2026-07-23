@@ -1,3 +1,4 @@
+![License](https://img.shields.io/badge/license-Proprietary-red.svg)
 # 🧪 Elemental Society Analysis
 
 **Professional Geochemical Data Analysis Suite**
@@ -33,6 +34,15 @@ Elemental Society Analysis is a professional geochemical data cleaning and explo
 
 ### Visualization
 - Correlation heatmap with strongest correlations highlighted
+- <!-- BADGES -->
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)
+![License](https://img.shields.io/badge/license-Proprietary-red.svg)
+![Status](https://img.shields.io/badge/status-stable-brightgreen.svg)
+
+# 🧪 Elemental Society Analysis
+
+**Professional Geochemical Data Analysis Suite**
 - PCA scores with PC1 direction and loadings
 - Scatter plots with trend lines
 - Outlier visualization
