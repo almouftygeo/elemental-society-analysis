@@ -1,0 +1,3 @@
+## Closure problems in geoochemistry and their realtions to correlation, peasorn , spareman and regression :
+assume variables are free to vary independently. Applying them to closed data produces spurious correlations—relationships that are mathematical artifacts, not geological truths.
+
