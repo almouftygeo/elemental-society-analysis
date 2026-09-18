@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
+
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
@@ -39,9 +39,9 @@ class AnomalyDetectorConfig:
 class ExtendedIsolationForest(AnomalyDetector):
     """Isolation Forest detector with strict column enforcement."""
 
-    def __init__(self, config: Optional[AnomalyDetectorConfig] = None):
+    def __init__(self, config: AnomalyDetectorConfig | None = None):
         self.config = config or AnomalyDetectorConfig()
-        self.model: Optional[IsolationForest] = None
+        self.model: IsolationForest | None = None
         self.feature_names = None
         self._fitted = False
 
@@ -101,9 +101,9 @@ class ExtendedIsolationForest(AnomalyDetector):
 class LocalOutlierFactorDetector(AnomalyDetector):
     """LOF detector wrapper."""
 
-    def __init__(self, config: Optional[AnomalyDetectorConfig] = None):
+    def __init__(self, config: AnomalyDetectorConfig | None = None):
         self.config = config or AnomalyDetectorConfig()
-        self.model: Optional[LocalOutlierFactor] = None
+        self.model: LocalOutlierFactor | None = None
         self.feature_names = None
         self._fitted = False
 

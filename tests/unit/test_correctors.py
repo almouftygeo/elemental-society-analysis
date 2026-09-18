@@ -5,8 +5,8 @@ import pandas as pd
 import pytest
 
 from elemental_society_analysis.geochem.correctors import (
-    CLRCorrector,
     ALRCorrector,
+    CLRCorrector,
     ILRCorrector,
     classify_relative_value,
 )
