@@ -88,9 +88,7 @@ class ExtendedIsolationForest(AnomalyDetector):
             return X[self.feature_names].copy()
         X = np.asarray(X)
         if X.shape[1] != len(self.feature_names):
-            raise ValueError(
-                f"Expected {len(self.feature_names)} features, got {X.shape[1]}"
-            )
+            raise ValueError(f"Expected {len(self.feature_names)} features, got {X.shape[1]}")
         return pd.DataFrame(X, columns=self.feature_names)
 
     def _check_fitted(self):

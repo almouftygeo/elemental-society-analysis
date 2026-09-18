@@ -1,7 +1,7 @@
 """Closure correctors for compositional data (CLR, ALR, ILR)."""
 
 from abc import ABC, abstractmethod
-from typing import Dict
+
 import numpy as np
 import pandas as pd
 
@@ -57,9 +57,7 @@ class CLRCorrector(ClosureCorrector):
             columns=data.columns,
         )
 
-    def apply_with_enrichment(
-        self, data: pd.DataFrame, tolerance: float = 0.05
-    ) -> Dict:
+    def apply_with_enrichment(self, data: pd.DataFrame, tolerance: float = 0.05) -> dict:
         """Apply CLR and return full interpretation dictionary."""
         clr = self.apply(data)
         enrichment = np.exp(clr)
@@ -81,9 +79,7 @@ class CLRCorrector(ClosureCorrector):
                 "near_geometric_mean": 0,
             }
             for col in enrichment.columns:
-                v = classify_relative_value(
-                    enrichment.loc[idx, col], tolerance=tolerance
-                )
+                v = classify_relative_value(enrichment.loc[idx, col], tolerance=tolerance)
                 classification_counts[v] += 1
             sample_interpretations.append(
                 {
@@ -108,9 +104,7 @@ class CLRCorrector(ClosureCorrector):
         for col in enrichment.columns:
             counts = {"enriched": 0, "depleted": 0, "near_geometric_mean": 0}
             for idx in enrichment.index:
-                v = classify_relative_value(
-                    enrichment.loc[idx, col], tolerance=tolerance
-                )
+                v = classify_relative_value(enrichment.loc[idx, col], tolerance=tolerance)
                 counts[v] += 1
             summary["overall_classification_counts"][col] = counts
 
