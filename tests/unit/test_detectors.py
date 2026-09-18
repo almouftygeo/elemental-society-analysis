@@ -1,4 +1,5 @@
 """Shared pytest fixtures for elemental-society-analysis."""
+
 import sys
 from pathlib import Path
 
@@ -14,8 +15,9 @@ import pytest
 @pytest.fixture
 def numeric_data():
     rng = np.random.default_rng(42)
-    return pd.DataFrame(rng.normal(size=(100, 5)),
-                        columns=[f"c{i}" for i in range(5)])
+    return pd.DataFrame(rng.normal(size=(100, 5)), columns=[f"c{i}" for i in range(5)])
+
+
 import numpy as np
 import pytest
 from elemental_society_analysis.models.detectors import (
@@ -56,6 +58,7 @@ def test_create_detector_factory_unknown():
     cfg = AnomalyDetectorConfig(method="banana")
     with pytest.raises(ValueError):
         create_detector(cfg)
+
 
 """Unit tests for anomaly detectors."""
 import numpy as np
@@ -99,4 +102,3 @@ def test_create_detector_factory_unknown():
     cfg = AnomalyDetectorConfig(method="banana")
     with pytest.raises(ValueError):
         create_detector(cfg)
-

@@ -1,4 +1,5 @@
 """Shared pytest fixtures for elemental-society-analysis."""
+
 import sys
 from pathlib import Path
 
@@ -25,11 +26,12 @@ def numeric_data():
 @pytest.fixture
 def sample_composition():
     """Small geochemical composition table (5 oxides, 3 samples)."""
-    return pd.DataFrame({
-        "SiO2":  [65.2, 54.1, 72.0],
-        "Al2O3": [15.1, 17.8, 12.4],
-        "Fe2O3": [4.2, 8.5, 2.1],
-        "MgO":   [2.1, 5.2, 0.8],
-        "CaO":   [3.5, 7.1, 1.2],
-    })
-
+    return pd.DataFrame(
+        {
+            "SiO2": [65.2, 54.1, 72.0],
+            "Al2O3": [15.1, 17.8, 12.4],
+            "Fe2O3": [4.2, 8.5, 2.1],
+            "MgO": [2.1, 5.2, 0.8],
+            "CaO": [3.5, 7.1, 1.2],
+        }
+    )

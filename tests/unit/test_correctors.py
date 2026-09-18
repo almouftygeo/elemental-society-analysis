@@ -1,4 +1,5 @@
 """Unit tests for closure correctors."""
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -36,4 +37,3 @@ def test_classify_relative_value():
     assert classify_relative_value(1.10) == "enriched"
     assert classify_relative_value(0.90) == "depleted"
     assert classify_relative_value(1.00) == "near_geometric_mean"
-
