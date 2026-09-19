@@ -55,6 +55,19 @@ def load_dataframe(config: IOConfig, path: str | Path | None = None) -> pd.DataF
         keep_default_na=True,
     )
 
+    # Drop footer/blank rows and any row without an ID
+    if "ID" in df.columns:
+        before = len(df)
+        df = df[df["ID"].notna()].reset_index(drop=True)
+        if before - len(df):
+            logger.info("Dropped %d row(s) with missing ID", before - len(df))
+        # src/elemental_society_analysis/geochem/loader.py — right after pd.read_csv:
+    df = df.dropna(how="all")                      # trailing ghost rows
+    df = df.dropna(subset=["ID"])                  # a row without ID cannot be used
+    if "Th_ppm.1" in df.columns:  df = df.drop(columns=["Th_ppm.1"])   # exact twin
+    if "K_pct.1"  in df.columns:  df = df.rename(columns={"K_pct.1": "K_pct"})  # superset wins
+
+
     id_cols = set(config.id_columns)
     coord_cols = set(config.coord_columns)
 
