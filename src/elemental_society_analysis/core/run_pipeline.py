@@ -26,24 +26,15 @@ def _build_corrector(method: str):
 
 
 def _build_detector(method: str, n_neighbors: int, contamination: float):
-    """Instantiate a detector from the detectors module by name.
-
-    The detector classes expect an AnomalyDetectorConfig object, not raw kwargs.
-    """
+    """Instantiate a detector from the detectors module by name."""
     from ..models import detectors as det
 
-    # Try to import the config dataclass
     config_cls = getattr(det, "AnomalyDetectorConfig", None)
     if config_cls is None:
-        # Fallback: try importing from models.config
-        try:
-            from ..models.config import AnomalyDetectorConfig as config_cls  # type: ignore
-        except Exception as exc:
-            raise ImportError(
-                "AnomalyDetectorConfig not found in detectors.py or models.config"
-            ) from exc
+        raise ImportError("AnomalyDetectorConfig not found in detectors module")
 
     method_l = method.lower()
+
     if method_l == "lof":
         cls = getattr(det, "LocalOutlierFactorDetector", None)
         if cls is None:
@@ -55,7 +46,6 @@ def _build_detector(method: str, n_neighbors: int, contamination: float):
         cls = getattr(det, "ExtendedIsolationForest", None)
         if cls is None:
             raise ImportError("ExtendedIsolationForest not found")
-        # Isolation Forest usually does not need n_neighbors; use contamination only
         try:
             cfg = config_cls(contamination=contamination)
         except TypeError:
@@ -64,13 +54,13 @@ def _build_detector(method: str, n_neighbors: int, contamination: float):
 
     raise ValueError(f"Unsupported detector: {method}")
 
-
 def _prepare_core_matrix(
     df: pd.DataFrame,
     core_features: list[str],
-    min_coverage: float = 0.80,
+    min_coverage: float = 0.50,
+    impute: bool = True,
 ) -> tuple[pd.DataFrame, list[str]]:
-    """Select high-coverage features, then drop remaining NaN rows."""
+    """Select sufficiently-covered features, then impute or drop remaining NaN rows."""
     missing = [c for c in core_features if c not in df.columns]
     if missing:
         raise ValueError(f"Core features missing in dataframe: {missing}")
@@ -88,20 +78,40 @@ def _prepare_core_matrix(
         )
 
     subset = subset[kept]
+    if subset.empty:
+        raise ValueError("No features survive the coverage filter.")
 
-    before = len(subset)
-    subset = subset.dropna(how="any")
-    logger.info(
-        "Rows after dropping NaN in kept features: %d / %d",
-        len(subset),
-        before,
-    )
+    if impute:
+        before = len(subset)
+        nan_cells = int(subset.isna().sum().sum())
+        if nan_cells:
+            medians = subset.median(numeric_only=True)
+            subset = subset.fillna(medians)
+        logger.info(
+            "Median-imputed %d cells across %d rows (kept %d/%d rows)",
+            nan_cells,
+            before,
+            len(subset),
+            before,
+        )
+    else:
+        before = len(subset)
+        subset = subset.dropna(how="any")
+        logger.info(
+            "Rows after dropping NaN in kept features: %d / %d",
+            len(subset),
+            before,
+        )
 
     if subset.empty:
         raise ValueError(
-            "No samples left after dropping NaN rows. "
-            "Consider lowering min_coverage or imputing."
+            "No samples left after cleaning. "
+            "Consider lowering min_coverage or enabling impute."
         )
+
+    if subset.isna().any().any():
+        raise ValueError("Core matrix still contains NaN after preparation.")
+
     return subset, kept
 
 
@@ -113,8 +123,9 @@ def run_pipeline(config: Config | None = None) -> dict:
     if not oxide_cols:
         raise ValueError("No oxide columns detected.")
 
-    # Closure check
+    # --- Closure check (report how many rows it used) ---
     oxide_df = df[oxide_cols].dropna(how="any")
+    logger.info("Closure computed on %d/%d rows", len(oxide_df), len(df))
     if len(oxide_df) > 1:
         oxide_sums = oxide_df.sum(axis=1)
         cv = float(oxide_sums.std(ddof=1) / oxide_sums.mean())
@@ -122,11 +133,12 @@ def run_pipeline(config: Config | None = None) -> dict:
         cv = float("nan")
     logger.info("Oxide CV=%.4f (closed=%s)", cv, cv < 0.05)
 
-    # Core matrix
+    # --- Core matrix ---
     core_matrix, kept_features = _prepare_core_matrix(
         df,
         config.io.core_features,
         min_coverage=config.io.min_coverage,
+        impute=True,
     )
     logger.info(
         "Core matrix shape=%s kept_features=%s",
@@ -134,15 +146,15 @@ def run_pipeline(config: Config | None = None) -> dict:
         kept_features,
     )
 
-    # CLR on the core matrix
+    # --- CLR on the core matrix ---
     corrector = _build_corrector(config.correction.method)
     transformed = corrector.apply(core_matrix)
     logger.info("Transformed shape=%s", transformed.shape)
 
     if transformed.isna().any().any():
-        raise ValueError("Transformed matrix contains NaN — check zero replacement.")
+        raise ValueError("Transformed matrix contains NaN - check zero replacement.")
 
-    # Detector
+    # --- Detector ---
     detector = _build_detector(
         config.anomaly.method,
         config.anomaly.n_neighbors,
@@ -153,7 +165,7 @@ def run_pipeline(config: Config | None = None) -> dict:
     scores = np.asarray(detector.decision_function(transformed))
     anomaly_count = int((labels == -1).sum())
 
-    # Metrics
+    # --- Metrics ---
     out_dir = Path(config.io.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     metrics = {
@@ -174,11 +186,16 @@ def run_pipeline(config: Config | None = None) -> dict:
     )
     logger.info("Wrote reports/metrics.json")
 
-    # Per-sample labels
-    result_df = core_matrix.copy()
+    # --- Per-sample labels (attach ID so downstream scripts can join reliably) ---
+    ordered_cols = [c for c in config.io.core_features if c in core_matrix.columns]
+    result_df = core_matrix[ordered_cols].copy()
+
+    if "ID" in df.columns:
+        result_df.insert(0, "ID", df.loc[core_matrix.index, "ID"].values)
+
     result_df["anomaly_label"] = labels
     result_df["anomaly_score"] = scores
-    result_df.to_csv(out_dir / "anomaly_labels.csv")
+    result_df.to_csv(out_dir / "anomaly_labels.csv", index=False)
     logger.info("Wrote reports/anomaly_labels.csv")
 
     return {
