@@ -30,3 +30,11 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb_checkpoints/
+data/raw/
+data/processed/
+reports/
+models/checkpoints/
+models/production/
+.venv/
+__pycache__/
+*.pyc
