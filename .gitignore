@@ -38,3 +38,11 @@ models/production/
 .venv/
 __pycache__/
 *.pyc
+data/raw/
+data/processed/
+reports/
+models/checkpoints/
+models/production/
+.venv/
+__pycache__/
+*.pyc
