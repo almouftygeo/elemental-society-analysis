@@ -17,7 +17,7 @@ io:
   output_dir: reports/
   id_columns: ["ID", "Name of Area", "Lithology", "Alteration"]
   coord_columns: ["Lat", "Long", "Elevation", "X(EOV)", "Y(EOV)"]
-  min_coverage: 0.40
+  min_coverage: 0.80
   core_features:
     - Si_pct
     - Al_pct
