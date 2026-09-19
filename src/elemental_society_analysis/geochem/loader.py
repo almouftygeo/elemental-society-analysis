@@ -43,6 +43,9 @@ def _clean_numeric_cell(value: object, decimal: str = ",") -> float:
 
 def load_dataframe(config: IOConfig, path: str | Path | None = None) -> pd.DataFrame:
     """Load the CSV and coerce numeric columns using the IO config."""
+
+def load_dataframe(config: IOConfig, path: str | Path | None = None) -> pd.DataFrame:
+    """Load the CSV and coerce numeric columns using the IO config."""
     csv_path = Path(path) if path else Path(config.raw_path)
     logger.info("Loading %s", csv_path)
 
@@ -55,18 +58,47 @@ def load_dataframe(config: IOConfig, path: str | Path | None = None) -> pd.DataF
         keep_default_na=True,
     )
 
-    # Drop footer/blank rows and any row without an ID
+    # Drop footer/blank rows (rows without an ID are not samples)
     if "ID" in df.columns:
         before = len(df)
         df = df[df["ID"].notna()].reset_index(drop=True)
         if before - len(df):
             logger.info("Dropped %d row(s) with missing ID", before - len(df))
-        # src/elemental_society_analysis/geochem/loader.py — right after pd.read_csv:
-    df = df.dropna(how="all")                      # trailing ghost rows
-    df = df.dropna(subset=["ID"])                  # a row without ID cannot be used
-    if "Th_ppm.1" in df.columns:  df = df.drop(columns=["Th_ppm.1"])   # exact twin
-    if "K_pct.1"  in df.columns:  df = df.rename(columns={"K_pct.1": "K_pct"})  # superset wins
 
+    # Resolve duplicate column names in one pass.
+    # The raw CSV declares some headers twice (K_pct, Th_ppm).
+    # pandas preserves both with the same label, which breaks
+    # `df["K_pct"]` and `coverage["K_pct"]` later.
+    # Strategy: rename the Nth occurrence of X to X__dupN, then
+    # drop it if it is an exact copy of X on the shared non-NaN rows.
+    seen: dict[str, int] = {}
+    renamed: list[str] = []
+    for c in df.columns:
+        if c in seen:
+            seen[c] += 1
+            renamed.append(f"{c}__dup{seen[c]}")
+        else:
+            seen[c] = 0
+            renamed.append(c)
+    df.columns = renamed
+
+    _dup_re = re.compile(r"^(?P<base>.+?)(?:\.\d+|__dup\d+)$")
+    for col in list(df.columns):
+        m = _dup_re.match(col)
+        if not m:
+            continue
+        base = m.group("base")
+        if base not in df.columns:
+            continue
+        shared = df[[base, col]].dropna()
+        if len(shared) and shared[base].equals(shared[col]):
+            logger.info("Dropping exact duplicate column %s (== %s)", col, base)
+            df = df.drop(columns=[col])
+        else:
+            logger.warning(
+                "Column %s differs from %s on shared rows; keeping both",
+                col, base,
+            )
 
     id_cols = set(config.id_columns)
     coord_cols = set(config.coord_columns)
@@ -83,6 +115,7 @@ def load_dataframe(config: IOConfig, path: str | Path | None = None) -> pd.DataF
 
     logger.info("Loaded shape=%s numeric=%d", df.shape,
                 df.select_dtypes(include=[np.number]).shape[1])
+    return df
     return df
 
 
