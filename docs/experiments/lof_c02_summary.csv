@@ -1,0 +1,5 @@
+experiment,n_neighbors,contamination,anomaly_count,anomaly_ids
+lof_k05_c02,5,0.02,0,
+lof_k12_c02,12,0.02,0,
+lof_k15_c02,15,0.02,1,PT-1
+lof_k22_c02,22,0.02,0,
