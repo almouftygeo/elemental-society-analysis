@@ -1,0 +1,43 @@
+correction:
+  method: CLR
+  zero_strategy: tiny_value
+  tiny_value: 1.0e-10
+
+anomaly:
+  method: LOF
+  n_neighbors: 15
+  contamination: 0.1
+
+io:
+  raw_path: data/raw/all_new_data.csv
+  sample_path: data/sample/tokaj_sample.csv
+  encoding: cp1252
+  separator: ";"
+  decimal: ","
+  output_dir: reports/
+  id_columns: ["ID", "Name of Area", "Lithology", "Alteration"]
+  coord_columns: ["Lat", "Long", "Elevation", "X(EOV)", "Y(EOV)"]
+  min_coverage: 0.80
+  core_features:
+    - Si_pct
+    - Al_pct
+    - K_pct
+    - Na_pct
+    - Fe_pct
+    - Ca_pct
+    - Mg_pct
+    - Li_ppm
+    - Rb_ppm
+    - Cs_ppm
+    - Nb_ppm
+    - Ta_ppm
+    - Sn_ppm
+    - Be_ppm
+    - Ga_ppm
+    - Tl_ppm
+    - U_ppm
+    - Th_ppm
+
+logging:
+  level: INFO
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
