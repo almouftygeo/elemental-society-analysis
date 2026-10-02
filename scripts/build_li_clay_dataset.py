@@ -94,11 +94,13 @@ def main() -> None:
 
     # -- Assemble the subset --
     out = pd.DataFrame({"ID": df[id_col].astype(str).str.strip()})
-    for coord, cands in COORD_CANDIDATES.items():
-        hit = next((c for c in df.columns
-                    if any(k == c.lower() for k in cands)), None)
-        if hit:
-            out[coord] = df[hit]
+    for coord, keys in {"Lat": ("lat",), "Long": ("lon", "long")}.items():
+        hits = [c for c in df.columns if c.lower().startswith(keys)]
+        if hits:
+            out[coord] = df[hits[0]]
+            print(f"Coordinate {coord} <- '{hits[0]}'")
+        else:
+            print(f"WARNING: no column found for {coord}")
     for canon, (col, src_unit, _method) in chosen.items():
         values = pd.to_numeric(df[col], errors="coerce")
         # USGS convention: negative value = censored below |value| (below DL).
@@ -109,8 +111,13 @@ def main() -> None:
         out[canon] = values
 
     out = out.dropna(subset=["ID"]).drop_duplicates(subset="ID")
+    feats = [c for c in CANONICAL if c in out.columns]
+    before = len(out)
+    out = out.dropna(subset=feats).reset_index(drop=True)
+    print(f"Complete-case filter: kept {len(out)} of {before} rows")
     print(f"\nFinal subset: {out.shape[0]} samples, "
           f"{sum(c in out.columns for c in CANONICAL)} features (+ID/coords)")
+    
 
     feats = [c for c in CANONICAL if c in out.columns]
     print("\n=== Final feature coverage ===")
