@@ -1,0 +1,42 @@
+correction:
+  method: CLR
+  zero_strategy: tiny_value
+  tiny_value: 1.0e-10
+
+anomaly:
+  method: LOF
+  n_neighbors: 50        # 13.1k samples vs Tokaj's 28 — k=50 is meaningful here
+  contamination: 0.05
+
+io:
+  raw_path: data/processed/usgs_li_clay_subset.csv
+  sample_path: data/processed/usgs_li_clay_subset.csv   # UNUSED (grep-verified); required by IOConfig
+  encoding: utf-8        # USGS CSV, not cp1252 Tokaj
+  separator: ","
+  decimal: "."
+  output_dir: reports/usgs_li_clay/
+  id_columns: ["ID"]
+  coord_columns: ["Lat", "Long"]
+  min_coverage: 0.80     # safe: complete-case data is at 1.0 everywhere
+  core_features:
+    - Si_pct
+    - Al_pct
+    - K_pct
+    - Fe_pct
+    - Ca_pct
+    - Mg_pct
+    - Li_ppm
+    - Rb_ppm
+    - Cs_ppm
+    - Nb_ppm
+    - Ta_ppm
+    - Sn_ppm
+    - Be_ppm
+    - Ga_ppm
+    - Tl_ppm
+    - U_ppm
+    - Th_ppm
+
+logging:
+  level: INFO
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
