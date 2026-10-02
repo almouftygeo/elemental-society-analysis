@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 
 import numpy as np
+import sys
 import pandas as pd
 
 from ..geochem.loader import load_dataframe, detect_oxide_columns
@@ -116,7 +117,9 @@ def _prepare_core_matrix(
 
 
 def run_pipeline(config: Config | None = None) -> dict:
-    config = config or load_config()
+    config_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("configs/default.yaml")
+    config = load_config(config_path)
+
 
     df = load_dataframe(config.io)
     oxide_cols = detect_oxide_columns(df)
