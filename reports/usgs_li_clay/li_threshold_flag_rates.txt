@@ -1,0 +1,7 @@
+Mapped sample count: 11,989
+Global anomaly rate: 5.013%
+
+Li threshold     n   flagged   flag_rate   enrichment
+>=  200 ppm  92        51    55.435%       11.06x
+>=  500 ppm  30        16    53.333%       10.64x
+>= 1000 ppm  12         7    58.333%       11.64x

@@ -1,50 +1,63 @@
+# -----------------------------------------------------------------------------
 # Python
+# -----------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
-*.egg-info/
-.venv/
-venv/
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
 
-# Environment
-.env
-.python-version
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
 
-# Generated artifacts
-reports/
-build/
-dist/
+# -----------------------------------------------------------------------------
+# Jupyter
+# -----------------------------------------------------------------------------
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
 
-# Raw and derived data (keep out of source control)
+# -----------------------------------------------------------------------------
+# Local and externally sourced data
+# -----------------------------------------------------------------------------
 data/raw/
-data/sample/
+data/processed/
+data/external/
 
-# OS / editor cruft
+# Keep small, versioned demonstration datasets if needed
+!data/sample/
+!data/sample/**
+
+# -----------------------------------------------------------------------------
+# Generated reports and experiment artifacts
+# -----------------------------------------------------------------------------
+reports/**/*.csv
+reports/**/*.json
+reports/**/*.png
+reports/**/*.pdf
+reports/**/*.html
+
+# Keep concise written interpretation and report structure
+!reports/**/*.md
+!reports/.gitkeep
+
+# -----------------------------------------------------------------------------
+# Model artifacts
+# -----------------------------------------------------------------------------
+models/checkpoints/
+models/production/
+
+# Keep model configuration and metadata where needed
+!models/.gitkeep
+!models/**/*.yaml
+!models/**/*.yml
+!models/**/*.json
+
+# -----------------------------------------------------------------------------
+# Operating system / editor files
+# -----------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
-*.swp
-*~
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb_checkpoints/
-data/raw/
-data/processed/
-reports/
-models/checkpoints/
-models/production/
-.venv/
-__pycache__/
-*.pyc
-data/raw/
-data/processed/
-reports/
-models/checkpoints/
-models/production/
-.venv/
-__pycache__/
-*.pyc
-data/external/
-data/external/
+.vscode/
+.idea/
