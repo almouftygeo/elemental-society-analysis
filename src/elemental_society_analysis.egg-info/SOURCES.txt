@@ -16,8 +16,16 @@ src/elemental_society_analysis/core/run_pipeline.py
 src/elemental_society_analysis/geochem/__init__.py
 src/elemental_society_analysis/geochem/correctors.py
 src/elemental_society_analysis/geochem/loader.py
+src/elemental_society_analysis/geospatial/__init__.py
+src/elemental_society_analysis/ingestion/__init__.py
+src/elemental_society_analysis/ingestion/canonical.py
+src/elemental_society_analysis/io/__init__.py
+src/elemental_society_analysis/io/loaders.py
 src/elemental_society_analysis/models/__init__.py
 src/elemental_society_analysis/models/detectors.py
 src/elemental_society_analysis/ui/__init__.py
 src/elemental_society_analysis/utils/__init__.py
 src/elemental_society_analysis/utils/config.py
+src/elemental_society_analysis/validation/__init__.py
+tests/test_canonical.py
+tests/test_loader.py

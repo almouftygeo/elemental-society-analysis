@@ -1,0 +1,35 @@
+[33mac7c0b9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeat/geospatial-data-foundation[m[33m)[m chore: initialize elemental-society-analysis project structure
+[33m2edff4b[m[33m ([m[1;31morigin/feat/public-data-loader-v2[m[33m, [m[1;32mfeat/public-data-loader-v2[m[33m, [m[1;32mfeat/li-clay[m[33m)[m docs(agents): project skill/memory file - full history, conventions, v0.3 backlog
+[33me63cfb3[m[33m ([m[1;33mtag: [m[1;33mv0.2.0-public-data-baseline[m[33m)[m docs(findings): v0.2.0 results - 11x Li detection lift; district blindness measured; mechanism open
+[33m73f69c8[m feat(scripts): spatial validation v1 - result: LOF flags isolated outliers, not districts (0.27x, p=0.02)
+[33me760cfe[m feat(pipeline): accept optional config path argument (default preserved)
+[33m5758455[m chore(config): add USGS Li-clay LOF baseline experiment
+[33m336eb8a[m fix(scripts): capture Lat/Long by prefix match, keep complete ICP61 cases
+[33m5669c60[m feat(scripts): add EMRI Li-clay subset builder with method selection
+[33m82022a6[m chore(scripts): add USGS geochem inspection script
+[33m926e1e8[m[33m ([m[1;31morigin/feature/extended-if-refactor[m[33m, [m[1;32mfeature/extended-if-refactor[m[33m)[m docs(experiments): add 10 percent LOF sensitivity results
+[33md7a76d0[m[33m ([m[1;33mtag: [m[1;33mrun-ok[m[33m)[m chore(config): add LOF sensitivity experiment configs
+[33m633755e[m docs(experiments): record strict LOF sensitivity results
+[33m0f24c77[m chore(config): add LOF 2 percent sensitivity configs
+[33mfe534f6[m feat(scripts): two-stage REE convergence scorer with merge assertion
+[33medd8033[m[33m ([m[1;33mtag: [m[1;33mv0.1.0-pipeline-working[m[33m)[m fix(loader): dedupe .N-suffixed columns and drop missing-ID rows
+[33m74a405c[m fix(loader): drop rows with missing ID before detection
+[33m9dc81f7[m feat(scripts): add chondrite-normalized REE diagnostics
+[33mf0c2177[m fix: coverage 0.80, canonical K/Th columns, rerun detector
+[33m94ed922[m chore: gitignore raw/reports artifacts; track uv lock + python version
+[33me854de5[m chore: gitignore raw/reports artifacts; track uv lock + python version
+[33mea743b6[m fix(pipeline): restore working sources; ignore generated artifacts
+[33m1840371[m restore: recover pipeline sources overwritten by placeholder heredoc
+[33m744de40[m fix(pipeline): align labels via ID, impute NaN, keep LCT pathfinders
+[33m98d8a32[m fix(geochem): add ALR/ILR correctors; remove orphan test
+[33m5a39230[m fix(geochem): add ALR and ILR correctors; remove orphan test; 10 tests passing
+[33m77bbc9f[m chore: enforce LF line endings
+[33m1a8e88b[m feat(geochem): add zero strategies
+[33m22a98c9[m build: install project in editable mode; 5 detector tests passing
+[33mc43274e[m[33m ([m[1;33mtag: [m[1;33mv1.0[m[33m, [m[1;32mbackup/local-main-unrelated-history[m[33m)[m Initial structure with GeochemAnalyzer and services
+[33m59b3404[m Update with SVM, clustering fixes and geochemistry enhancements
+[33m476378c[m Create requirements.txt
+[33mde65f18[m[33m ([m[1;33mtag: [m[1;33mv1.0.0[m[33m)[m Update README.md
+[33md646947[m License
+[33m8bcde10[m Create README.md
+[33mb2840af[m Initial commit
