@@ -1,0 +1,17 @@
+ingestion:
+  decimal: ","
+
+storage:
+  raw_db_path: data/raw_db/maleg_raw.db
+
+quality:
+  sensor_limits:
+    TEMP-01: [80, 180]
+    PRESS-01: [0, 50]
+
+inputs:
+  sensor_jsons:
+    - data/raw/sensor_001.json
+  lab_csv: data/raw/lab_results.csv
+  event_jsons:
+    - data/raw/event_001.json
