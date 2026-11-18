@@ -61,3 +61,8 @@ models/production/
 Thumbs.db
 .vscode/
 .idea/
+venv/
+working esa files/
+li-clay-ai/
+*.egg-info/
+note_esa.txt
